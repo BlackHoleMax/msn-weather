@@ -137,10 +137,3 @@ def get_weather(lat: float, lon: float) -> dict:
         "Temperature": temperature,
         "ImageURL": image_url,
     }
-
-    return {
-        "Location": location_name,
-        "Weather": weather_desc,
-        "Temperature": temperature,
-        "ImageURL": image_url,
-    }

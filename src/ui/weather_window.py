@@ -154,6 +154,12 @@ class TransparentWeatherWindow(QWidget):
         """Start background thread to fetch weather data with timer."""
         # Stop existing thread if running
         if hasattr(self, 'weather_thread') and self.weather_thread:
+            # Disconnect signals first
+            try:
+                self.weather_thread.weather_loaded.disconnect()
+                self.weather_thread.error_occurred.disconnect()
+            except Exception:
+                pass  # Ignore errors if not connected
             self.weather_thread.stop()
             self.weather_thread.wait()
             
@@ -172,10 +178,8 @@ class TransparentWeatherWindow(QWidget):
         """
         self.lat = lat
         self.lon = lon
-        if hasattr(self, 'weather_thread') and self.weather_thread:
-            self.weather_thread.update_coordinates(lat, lon)
-            # Trigger immediate refresh
-            self.weather_thread.fetch_weather()
+        # Stop current weather thread and restart with new coordinates
+        self.load_weather()
 
     def update_display(self, data: dict) -> None:
         """
